@@ -22,6 +22,9 @@
 #ifndef MF_INPUT_SHIFTER_SUPPORT
 #define MF_INPUT_SHIFTER_SUPPORT 1
 #endif
+#ifndef MF_TFT_SUPPORT
+#define MF_TFT_SUPPORT 0
+#endif
 
 #define MODULE_MAX_PINS 69
 #define MAX_OUTPUTS 40
@@ -34,6 +37,7 @@
 #define MAX_ANALOG_INPUTS 16
 #define MAX_OUTPUT_SHIFTERS 4
 #define MAX_INPUT_SHIFTERS 4
+#define MAX_TFT_DISPLAYS 0
 
 #define STEPS 64
 #define STEPPER_SPEED 400 // 300 already worked, 467, too?

@@ -8,6 +8,7 @@
 #define MF_SERVO_DELAY_MS 5          // Time between servo updates
 #define MF_ANALOGAVERAGE_DELAY_MS 10 // time between updating the analog average calculation
 #define MF_ANALOGREAD_DELAY_MS 50    // time between sending analog values
+#define MF_TFTREAD_DELAY_MS 50       // time between sending TFT touch events
 
 enum
 {
@@ -23,7 +24,8 @@ enum
   kTypeStepper,             // 9 (new stepper type with auto zero support if btnPin is > 0)
   kShiftRegister,           // 10 Shift register support (example: 74HC595, TLC592X)
   kTypeAnalogInput,         // 11 Analog Device with 1 pin
-  kTypeInputShifter         // 12 Input shift register support (example: 74HC165)
+  kTypeInputShifter,        // 12 Input shift register support (example: 74HC165)
+  kTypeTFTButton            // 13 A virtual button on the TFT Touchscreen
 };
 
 // This is the list of recognized commands. These can be commands that can either be sent or received.
@@ -62,7 +64,8 @@ enum
   kSetModuleBrightness,  // 26
   kSetShiftRegisterPins, // 27
   kAnalogChange,         // 28
-  kInputShifterChange    // 29
+  kInputShifterChange,   // 29
+  kTFTButtonChange       // 30
 };
 
 void attachCommandCallbacks();
@@ -114,6 +117,7 @@ void OnSetZeroStepper();
 void updateSteppers();
 void OnSetServo();
 void updateServos();
+void updateTFTDisplays();
 void OnSetLcdDisplayI2C();
 void readButtons();
 void readEncoder();
@@ -133,4 +137,5 @@ void AddInputShifter(uint8_t latchPin, uint8_t clockPin, uint8_t dataPin, uint8_
 void ClearInputShifters();
 void readInputShifters();
 void handlerInputShifterOnChange(uint8_t eventId, uint8_t pin, const char *name);
+void handlerOnTFTTouch(uint8_t eventId, uint8_t pin, const char *name);
 #endif

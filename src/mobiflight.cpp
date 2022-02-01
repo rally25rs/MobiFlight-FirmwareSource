@@ -57,6 +57,29 @@ char foo;
 #include <MFOutputShifter.h>
 #endif
 
+#if MF_TFT_SUPPORT == 1
+#include <MFTFTDisplay.h>
+
+const int halfScreen = TFT_WIDTH / 2;
+
+TouchButton screen1buttons[] = {
+  TouchButton("VirtualButton0", 0, 0, 0, halfScreen, 100, "One"),
+  TouchButton("VirtualButton1", 1, halfScreen, 0, halfScreen, 100, "Two")
+};
+MFVirtualPanel screen1 = MFVirtualPanel("G1000 PFD L", 2, screen1buttons);
+
+TouchButton screen2buttons[] = {
+  TouchButton("VirtualButton2", 2, 0, 0, halfScreen, 100, "Three"),
+  TouchButton("VirtualButton3", 3, halfScreen, 0, halfScreen, 100, "Four")
+};
+MFVirtualPanel screen2 = MFVirtualPanel("G1000 PFD R", 2, screen2buttons);
+
+MFVirtualPanel screens[] = {
+  screen1,
+  screen2
+};
+#endif
+
 const uint8_t MEM_OFFSET_NAME = 0;
 const uint8_t MEM_LEN_NAME = 48;
 const uint8_t MEM_OFFSET_SERIAL = MEM_OFFSET_NAME + MEM_LEN_NAME;
@@ -141,6 +164,12 @@ MFInputShifter inputShifters[MAX_INPUT_SHIFTERS];
 uint8_t inputShiftersRegistered = 0;
 #endif
 
+#if MF_TFT_SUPPORT == 1
+MFTFTDisplay tftDisplays[MAX_TFT_DISPLAYS];
+uint8_t tftDisplaysRegistered = 0;
+uint32_t lastTFTRead = 0;
+#endif
+
 // Callbacks define on which received commands we take action
 void attachCommandCallbacks()
 {
@@ -200,6 +229,9 @@ void attachEventCallbacks()
   MFEncoder::attachHandler(handlerOnEncoder);
 #if MF_ANALOG_SUPPORT == 1
   MFAnalog::attachHandler(handlerOnAnalogChange);
+#endif
+#if MF_TFT_SUPPORT == 1
+  MFTFTDisplay::attachHandler(handlerOnTFTTouch);
 #endif
 }
 
@@ -336,6 +368,10 @@ void loop()
 
 #if MF_SERVO_SUPPORT == 1
   updateServos();
+#endif
+
+#if MF_TFT_SUPPORT == 1
+  updateTFTDisplays();
 #endif
 }
 
@@ -701,6 +737,53 @@ void ClearOutputShifters()
 }
 #endif
 
+#if MF_TFT_SUPPORT == 1
+//// TFT Touchscreen /////
+void AddTFTDisplay()
+{
+  if (tftDisplaysRegistered == MAX_TFT_DISPLAYS)
+    return;
+  
+  // hard-coded pins that my display is wired to, so that MF doesn't allow other inputs to use these pins.
+  // https://www.pjrc.com/store/display_ili9341_touch.html
+  registerPin(11, kTypeTFTButton); // SDI
+  registerPin(12, kTypeTFTButton); // SDO
+  registerPin(13, kTypeTFTButton); // SCK
+  registerPin(TFT_CS, kTypeTFTButton);
+  registerPin(TFT_DC, kTypeTFTButton);
+  registerPin(TS_CS, kTypeTFTButton);
+  registerPin(TS_TIRQ, kTypeTFTButton);
+
+  tftDisplays[tftDisplaysRegistered] = MFTFTDisplay(2, screens);
+  tftDisplays[tftDisplaysRegistered].attach();
+  tftDisplays[tftDisplaysRegistered].renderPanel(0);
+  tftDisplaysRegistered++;
+#ifdef DEBUG
+  cmdMessenger.sendCmd(kStatus, F("Added TFT Display"));
+#endif
+}
+
+void ClearTFTDisplays()
+{
+  clearRegisteredPins(kTypeTFTButton);
+  tftDisplaysRegistered = 0;
+#ifdef DEBUG
+  cmdMessenger.sendCmd(kStatus, F("Cleared TFT Displays"));
+#endif
+}
+
+void updateTFTDisplays()
+{
+  if (millis() - lastTFTRead < MF_TFTREAD_DELAY_MS)
+    return;
+  lastTFTRead = millis();
+
+  for(int i = 0; i < tftDisplaysRegistered; i++) {
+    tftDisplays[i].loop();
+  }
+}
+#endif
+
 //// EVENT HANDLER /////
 void handlerOnButton(uint8_t eventId, uint8_t pin, const char *name)
 {
@@ -739,6 +822,17 @@ void handlerOnAnalogChange(int value, uint8_t pin, const char *name)
   cmdMessenger.sendCmdArg(value);
   cmdMessenger.sendCmdEnd();
 };
+
+#if MF_TFT_SUPPORT == 1
+//// EVENT HANDLER /////
+void handlerOnTFTTouch(uint8_t eventId, uint8_t pin, const char *name)
+{
+  cmdMessenger.sendCmdStart(kTFTButtonChange);
+  cmdMessenger.sendCmdArg(name);
+  cmdMessenger.sendCmdArg(eventId);
+  cmdMessenger.sendCmdEnd();
+};
+#endif
 
 /**
  ** config stuff
@@ -837,6 +931,10 @@ void readConfig()
   char *params[6];
   if (*command == 0)
     return;
+
+  #if MF_TFT_SUPPORT == 1
+    AddTFTDisplay();
+  #endif
 
   do
   {
