@@ -13,16 +13,15 @@ class TouchButton
 {
   private:
     const char* _name;
-    int _joystickButtonNum;
     int _posX;
     int _posY;
     int _width;
     int _height;
     const char* _text;
+    uint8_t _virtualOutPin;
  
   public:
-    TouchButton(const char* name, int joystickButtonNum, int posX, int posY, int width, int height, const char* text);
-    int getJoystickButtonNum();
+    TouchButton(const char* name, int posX, int posY, int width, int height, const char* text, uint8_t virtualOutPin = 0);
     const char* getName();
     bool isTouchInBoundry(int touchX, int touchY);
     void render(Adafruit_ILI9341* tft, bool pressed);

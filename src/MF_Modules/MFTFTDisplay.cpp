@@ -87,13 +87,12 @@ void MFTFTDisplay::_handleTouchButtonPress(int16_t x, int16_t y, bool pressed)
     TouchButton tb = touchButtons[i];
     if(tb.isTouchInBoundry(x, y)) {
       tb.render(_tft, pressed);
-      int buttonNum = tb.getJoystickButtonNum();
       const char* buttonName = tb.getName();
       if(_handler) {
         if(pressed) {
-          (*_handler)(tftOnPress, buttonNum, buttonName);
+          (*_handler)(tftOnPress, buttonName);
         } else {
-          (*_handler)(tftOnRelease, buttonNum, buttonName);
+          (*_handler)(tftOnRelease, buttonName);
         }
       }
     }

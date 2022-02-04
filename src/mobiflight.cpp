@@ -43,6 +43,7 @@ char foo;
 #endif
 
 #include <MFOutput.h>
+#include <MFVirtualOutput.h>
 
 #if MF_LCD_SUPPORT == 1
 #include <LiquidCrystal_I2C.h>
@@ -61,18 +62,40 @@ char foo;
 #include <MFTFTDisplay.h>
 
 const int halfScreen = TFT_WIDTH / 2;
+const int thirdScreen = TFT_WIDTH / 3;
+const int sixBtnHeight = 50;
+const int panelTitleHeight = TFT_HEIGHT - sixBtnHeight * 6;
 
 TouchButton screen1buttons[] = {
-  TouchButton("VirtualButton0", 0, 0, 0, halfScreen, 100, "One"),
-  TouchButton("VirtualButton1", 1, halfScreen, 0, halfScreen, 100, "Two")
+  // column 1
+  TouchButton("G1000_AP", 0, panelTitleHeight, thirdScreen, sixBtnHeight, "AP"),
+  TouchButton("G1000_NAV", 0, panelTitleHeight + sixBtnHeight, thirdScreen, sixBtnHeight, "NAV"),
+  TouchButton("G1000_HDG", 0, panelTitleHeight + sixBtnHeight * 2, thirdScreen, sixBtnHeight, "HDG"),
+  TouchButton("G1000_APR", 0, panelTitleHeight + sixBtnHeight * 3, thirdScreen, sixBtnHeight, "APR"),
+  TouchButton("G1000_VS", 0, panelTitleHeight + sixBtnHeight * 4, thirdScreen, sixBtnHeight, "VS"),
+  TouchButton("G1000_FLC", 0, panelTitleHeight + sixBtnHeight * 5, thirdScreen, sixBtnHeight, "FLC"),
+  // column 2
+  TouchButton("G1000_FD", thirdScreen, panelTitleHeight, thirdScreen, sixBtnHeight, "FD"),
+  TouchButton("G1000_ALT", thirdScreen, panelTitleHeight + sixBtnHeight, thirdScreen, sixBtnHeight, "ALT"),
+  TouchButton("G1000_VNV", thirdScreen, panelTitleHeight + sixBtnHeight * 2, thirdScreen, sixBtnHeight, "VNV"),
+  TouchButton("G1000_BC", thirdScreen, panelTitleHeight + sixBtnHeight * 3, thirdScreen, sixBtnHeight, "BC"),
+  TouchButton("G1000_N_UP", thirdScreen, panelTitleHeight + sixBtnHeight * 4, thirdScreen, sixBtnHeight, "N UP"),
+  TouchButton("G1000_N_DN", thirdScreen, panelTitleHeight + sixBtnHeight * 5, thirdScreen, sixBtnHeight, "N DN"),
+  // column 2
+  TouchButton("G1000_DIR", thirdScreen * 2, panelTitleHeight, thirdScreen * 3, sixBtnHeight, "-D->"),
+  TouchButton("G1000_MENU", thirdScreen * 2, panelTitleHeight + sixBtnHeight, thirdScreen, sixBtnHeight, "MENU"),
+  TouchButton("G1000_FPL", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 2, thirdScreen, sixBtnHeight, "FPL"),
+  TouchButton("G1000_PROC", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 3, thirdScreen, sixBtnHeight, "PROC"),
+  TouchButton("G1000_N_CLR", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 4, thirdScreen, sixBtnHeight, "CLR"),
+  TouchButton("G1000_N_ENT", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 5, thirdScreen, sixBtnHeight, "ENT"),
 };
-MFVirtualPanel screen1 = MFVirtualPanel("G1000 PFD L", 2, screen1buttons);
+MFVirtualPanel screen1 = MFVirtualPanel("G1000 PFD", 18, screen1buttons);
 
 TouchButton screen2buttons[] = {
-  TouchButton("VirtualButton2", 2, 0, 0, halfScreen, 100, "Three"),
-  TouchButton("VirtualButton3", 3, halfScreen, 0, halfScreen, 100, "Four")
+  TouchButton("VirtualButton2", 0, 0, halfScreen, 100, "Three"),
+  TouchButton("VirtualButton3", halfScreen, 0, halfScreen, 100, "Four")
 };
-MFVirtualPanel screen2 = MFVirtualPanel("G1000 PFD R", 2, screen2buttons);
+MFVirtualPanel screen2 = MFVirtualPanel("G1000 MFD", 2, screen2buttons);
 
 MFVirtualPanel screens[] = {
   screen1,
@@ -113,6 +136,7 @@ boolean configActivated = false;
 
 bool powerSavingMode = false;
 uint8_t pinsRegistered[MODULE_MAX_PINS + 1];
+uint8_t virtualPinsRegistered[MODULE_MAX_PINS + 1];
 const unsigned long POWER_SAVING_TIME = 60 * 15; // in seconds
 
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
@@ -122,6 +146,9 @@ MFEEPROM MFeeprom;
 
 MFOutput outputs[MAX_OUTPUTS];
 uint8_t outputsRegistered = 0;
+
+MFVirtualOutput virtualOutputs[MAX_OUTPUTS];
+uint8_t virtualOutputsRegistered = 0;
 
 MFButton buttons[MAX_BUTTONS];
 uint8_t buttonsRegistered = 0;
@@ -216,6 +243,8 @@ void attachCommandCallbacks()
 #if MF_OUTPUT_SHIFTER_SUPPORT
   cmdMessenger.attach(kSetShiftRegisterPins, OnSetOutputShifterPins);
 #endif
+
+  cmdMessenger.attach(kSetVirtualOutput, OnSetVirtualOutput);
 
 #ifdef DEBUG
   cmdMessenger.sendCmd(kStatus, F("Attached callbacks"));
@@ -403,6 +432,22 @@ void clearRegisteredPins()
     pinsRegistered[i] = kTypeNotSet;
 }
 
+bool isVirtualPinRegistered(uint8_t pin)
+{
+  return virtualPinsRegistered[pin] != kTypeNotSet;
+}
+
+void registerVirtualPin(uint8_t pin, uint8_t type)
+{
+  virtualPinsRegistered[pin] = type;
+}
+
+void clearRegisteredVirtualPins()
+{
+  for (int i = 0; i != MODULE_MAX_PINS + 1; ++i)
+    virtualPinsRegistered[i] = kTypeNotSet;
+}
+
 //// OUTPUT /////
 void AddOutput(uint8_t pin = 1, char const *name = "Output")
 {
@@ -425,6 +470,31 @@ void ClearOutputs()
   outputsRegistered = 0;
 #ifdef DEBUG
   cmdMessenger.sendCmd(kStatus, F("Cleared outputs"));
+#endif
+}
+
+//// VIRTUAL OUTPUT /////
+void AddVirtualOutput(uint8_t pin = 1, char const *name = "VirtualOutput")
+{
+  if (virtualOutputsRegistered == MAX_OUTPUTS)
+    return;
+  if (isVirtualPinRegistered(pin))
+    return;
+
+  virtualOutputs[virtualOutputsRegistered] = MFVirtualOutput(pin);
+  registerVirtualPin(pin, kTypeVirtualOutput);
+  virtualOutputsRegistered++;
+#ifdef DEBUG
+  cmdMessenger.sendCmd(kStatus, F("Added output"));
+#endif
+}
+
+void ClearVirtualOutputs()
+{
+  clearRegisteredVirtualPins();
+  virtualOutputsRegistered = 0;
+#ifdef DEBUG
+  cmdMessenger.sendCmd(kStatus, F("Cleared virtual outputs"));
 #endif
 }
 
@@ -825,7 +895,7 @@ void handlerOnAnalogChange(int value, uint8_t pin, const char *name)
 
 #if MF_TFT_SUPPORT == 1
 //// EVENT HANDLER /////
-void handlerOnTFTTouch(uint8_t eventId, uint8_t pin, const char *name)
+void handlerOnTFTTouch(uint8_t eventId, const char *name)
 {
   cmdMessenger.sendCmdStart(kTFTButtonChange);
   cmdMessenger.sendCmdArg(name);
@@ -950,6 +1020,12 @@ void readConfig()
       params[0] = strtok_r(NULL, ".", &p); // pin
       params[1] = strtok_r(NULL, ":", &p); // Name
       AddOutput(atoi(params[0]), params[1]);
+      break;
+
+    case kTypeVirtualOutput:
+      params[0] = strtok_r(NULL, ".", &p); // pin
+      params[1] = strtok_r(NULL, ":", &p); // Name
+      AddVirtualOutput(atoi(params[0]), params[1]);
       break;
 
 #if MF_SEGMENT_SUPPORT == 1
@@ -1242,6 +1318,15 @@ void OnSetLcdDisplayI2C()
   lastCommand = millis();
 }
 #endif
+
+void OnSetVirtualOutput()
+{
+  // Read led state argument, interpret string as boolean
+  int pin = cmdMessenger.readInt16Arg();
+  int state = cmdMessenger.readInt16Arg();
+  // onVirtualOutputChanged(pin, state);
+  lastCommand = millis();
+}
 
 void readButtons()
 {
