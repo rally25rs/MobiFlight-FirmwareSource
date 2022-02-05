@@ -8,7 +8,7 @@
 #define MF_SERVO_DELAY_MS 5          // Time between servo updates
 #define MF_ANALOGAVERAGE_DELAY_MS 10 // time between updating the analog average calculation
 #define MF_ANALOGREAD_DELAY_MS 50    // time between sending analog values
-#define MF_TFTREAD_DELAY_MS 50       // time between sending TFT touch events
+#define MF_TFTREAD_DELAY_MS 100       // time between sending TFT touch events
 
 enum
 {

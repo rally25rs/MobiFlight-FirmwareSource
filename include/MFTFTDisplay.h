@@ -14,18 +14,6 @@
 #include "TFTVars.h"
 #include "MFVirtualPanel.h"
 
-extern "C"
-{
-  // callback functions always follow the signature: void cmd(void);
-  typedef void (*tftEvent) (byte, const char *);
-};
-
-enum
-{
-  tftOnPress,
-  tftOnRelease,
-};
-
 /////////////////////////////////////////////////////////////////////
 /// \class MFTFTDisplay MFTFTDisplay.h <MFTFTDisplay.h>
 class MFTFTDisplay
@@ -37,6 +25,7 @@ public:
     void detach();
     void loop();
     void renderPanel(int16_t panelId);
+    void updateOutputs(uint8_t pin, int32_t state);
 
 private:
     static tftEvent _handler;

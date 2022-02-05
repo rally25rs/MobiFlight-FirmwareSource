@@ -65,37 +65,39 @@ const int halfScreen = TFT_WIDTH / 2;
 const int thirdScreen = TFT_WIDTH / 3;
 const int sixBtnHeight = 50;
 const int panelTitleHeight = TFT_HEIGHT - sixBtnHeight * 6;
+const int threeBtnHeight = (TFT_HEIGHT - panelTitleHeight) / 3;
 
-TouchButton screen1buttons[] = {
+TFTRenderable* screen1buttons[] = {
   // column 1
-  TouchButton("G1000_AP", 0, panelTitleHeight, thirdScreen, sixBtnHeight, "AP"),
-  TouchButton("G1000_NAV", 0, panelTitleHeight + sixBtnHeight, thirdScreen, sixBtnHeight, "NAV"),
-  TouchButton("G1000_HDG", 0, panelTitleHeight + sixBtnHeight * 2, thirdScreen, sixBtnHeight, "HDG"),
-  TouchButton("G1000_APR", 0, panelTitleHeight + sixBtnHeight * 3, thirdScreen, sixBtnHeight, "APR"),
-  TouchButton("G1000_VS", 0, panelTitleHeight + sixBtnHeight * 4, thirdScreen, sixBtnHeight, "VS"),
-  TouchButton("G1000_FLC", 0, panelTitleHeight + sixBtnHeight * 5, thirdScreen, sixBtnHeight, "FLC"),
+  new TouchButton("G1000_AP", 0, panelTitleHeight, thirdScreen, sixBtnHeight, "AP", 1),
+  new TouchButton("G1000_NAV", 0, panelTitleHeight + sixBtnHeight, thirdScreen, sixBtnHeight, "NAV"),
+  new TouchButton("G1000_HDG", 0, panelTitleHeight + sixBtnHeight * 2, thirdScreen, sixBtnHeight, "HDG"),
+  new TouchButton("G1000_APR", 0, panelTitleHeight + sixBtnHeight * 3, thirdScreen, sixBtnHeight, "APR"),
+  new TouchButton("G1000_VS", 0, panelTitleHeight + sixBtnHeight * 4, thirdScreen, sixBtnHeight, "VS"),
+  new TouchButton("G1000_FLC", 0, panelTitleHeight + sixBtnHeight * 5, thirdScreen, sixBtnHeight, "FLC"),
   // column 2
-  TouchButton("G1000_FD", thirdScreen, panelTitleHeight, thirdScreen, sixBtnHeight, "FD"),
-  TouchButton("G1000_ALT", thirdScreen, panelTitleHeight + sixBtnHeight, thirdScreen, sixBtnHeight, "ALT"),
-  TouchButton("G1000_VNV", thirdScreen, panelTitleHeight + sixBtnHeight * 2, thirdScreen, sixBtnHeight, "VNV"),
-  TouchButton("G1000_BC", thirdScreen, panelTitleHeight + sixBtnHeight * 3, thirdScreen, sixBtnHeight, "BC"),
-  TouchButton("G1000_N_UP", thirdScreen, panelTitleHeight + sixBtnHeight * 4, thirdScreen, sixBtnHeight, "N UP"),
-  TouchButton("G1000_N_DN", thirdScreen, panelTitleHeight + sixBtnHeight * 5, thirdScreen, sixBtnHeight, "N DN"),
-  // column 2
-  TouchButton("G1000_DIR", thirdScreen * 2, panelTitleHeight, thirdScreen * 3, sixBtnHeight, "-D->"),
-  TouchButton("G1000_MENU", thirdScreen * 2, panelTitleHeight + sixBtnHeight, thirdScreen, sixBtnHeight, "MENU"),
-  TouchButton("G1000_FPL", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 2, thirdScreen, sixBtnHeight, "FPL"),
-  TouchButton("G1000_PROC", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 3, thirdScreen, sixBtnHeight, "PROC"),
-  TouchButton("G1000_N_CLR", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 4, thirdScreen, sixBtnHeight, "CLR"),
-  TouchButton("G1000_N_ENT", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 5, thirdScreen, sixBtnHeight, "ENT"),
+  new TouchButton("G1000_FD", thirdScreen, panelTitleHeight, thirdScreen, sixBtnHeight, "FD"),
+  new TouchButton("G1000_ALT", thirdScreen, panelTitleHeight + sixBtnHeight, thirdScreen, sixBtnHeight, "ALT"),
+  new TouchButton("G1000_VNV", thirdScreen, panelTitleHeight + sixBtnHeight * 2, thirdScreen, sixBtnHeight, "VNV"),
+  new TouchButton("G1000_BC", thirdScreen, panelTitleHeight + sixBtnHeight * 3, thirdScreen, sixBtnHeight, "BC"),
+  new TouchButton("G1000_N_UP", thirdScreen, panelTitleHeight + sixBtnHeight * 4, thirdScreen, sixBtnHeight, "N UP"),
+  new TouchButton("G1000_N_DN", thirdScreen, panelTitleHeight + sixBtnHeight * 5, thirdScreen, sixBtnHeight, "N DN"),
+  // column 3
+  new TouchKnob(thirdScreen * 2, panelTitleHeight, thirdScreen, threeBtnHeight, "NAV"),
+  new TouchKnob(thirdScreen * 2, panelTitleHeight + threeBtnHeight, thirdScreen, threeBtnHeight, "HDG", 2),
+  new TouchKnob(thirdScreen * 2, panelTitleHeight + threeBtnHeight * 2, thirdScreen, threeBtnHeight, "ALT")
 };
-MFVirtualPanel screen1 = MFVirtualPanel("G1000 PFD", 18, screen1buttons);
+MFVirtualPanel screen1 = MFVirtualPanel("G1000 MFD Left", 15, screen1buttons);
 
-TouchButton screen2buttons[] = {
-  TouchButton("VirtualButton2", 0, 0, halfScreen, 100, "Three"),
-  TouchButton("VirtualButton3", halfScreen, 0, halfScreen, 100, "Four")
+TFTRenderable* screen2buttons[] = {
+  new TouchButton("G1000_DIR", thirdScreen * 2, panelTitleHeight, thirdScreen * 3, sixBtnHeight, "-D->"),
+  new TouchButton("G1000_MENU", thirdScreen * 2, panelTitleHeight + sixBtnHeight, thirdScreen, sixBtnHeight, "MENU"),
+  new TouchButton("G1000_FPL", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 2, thirdScreen, sixBtnHeight, "FPL"),
+  new TouchButton("G1000_PROC", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 3, thirdScreen, sixBtnHeight, "PROC"),
+  new TouchButton("G1000_N_CLR", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 4, thirdScreen, sixBtnHeight, "CLR"),
+  new TouchButton("G1000_N_ENT", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 5, thirdScreen, sixBtnHeight, "ENT")
 };
-MFVirtualPanel screen2 = MFVirtualPanel("G1000 MFD", 2, screen2buttons);
+MFVirtualPanel screen2 = MFVirtualPanel("G1000 MFD", 6, screen2buttons);
 
 MFVirtualPanel screens[] = {
   screen1,
@@ -276,6 +278,7 @@ void OnResetBoard()
 }
 
 // Setup function
+
 void setup()
 {
   Serial.begin(115200);
@@ -1322,9 +1325,11 @@ void OnSetLcdDisplayI2C()
 void OnSetVirtualOutput()
 {
   // Read led state argument, interpret string as boolean
-  int pin = cmdMessenger.readInt16Arg();
-  int state = cmdMessenger.readInt16Arg();
+  int16_t pin = cmdMessenger.readInt16Arg();
+  int32_t state = cmdMessenger.readInt32Arg();
+  virtualOutputs[pin].set(state);
   // onVirtualOutputChanged(pin, state);
+  tftDisplays[0].updateOutputs(pin, state);
   lastCommand = millis();
 }
 

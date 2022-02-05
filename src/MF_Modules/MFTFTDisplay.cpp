@@ -80,21 +80,13 @@ void MFTFTDisplay::loop()
 
 void MFTFTDisplay::_handleTouchButtonPress(int16_t x, int16_t y, bool pressed)
 {
-  int touchButtonsCount = _panels[_activePanel].getTouchButtonsCount();
-  TouchButton* touchButtons = _panels[_activePanel].getTouchButtons();
+  int renderablesCount = _panels[_activePanel].getRenderablesCount();
+  TFTRenderable** renderables = _panels[_activePanel].getRenderables();
 
-  for(int i = 0; i < touchButtonsCount; i++) {
-    TouchButton tb = touchButtons[i];
-    if(tb.isTouchInBoundry(x, y)) {
-      tb.render(_tft, pressed);
-      const char* buttonName = tb.getName();
-      if(_handler) {
-        if(pressed) {
-          (*_handler)(tftOnPress, buttonName);
-        } else {
-          (*_handler)(tftOnRelease, buttonName);
-        }
-      }
+  for(int i = 0; i < renderablesCount; i++) {
+    TFTRenderable* renderable = renderables[i];
+    if(_handler && renderable->isTouchInBoundry(x, y)) {
+      renderable->handleTouch(_tft, _handler, pressed);
     }
   }
 }
@@ -102,4 +94,24 @@ void MFTFTDisplay::_handleTouchButtonPress(int16_t x, int16_t y, bool pressed)
 void MFTFTDisplay::attachHandler(tftEvent newHandler)
 {
   _handler = newHandler;
+}
+
+void MFTFTDisplay::updateOutputs(uint8_t pin, int32_t state)
+{
+  for (int panelIdx = 0; panelIdx < _panelCount; panelIdx++) {
+    MFVirtualPanel panel = _panels[panelIdx];
+    TFTRenderable** renderables = panel.getRenderables();
+    for (int renderableIdx = 0; renderableIdx < panel.getRenderablesCount(); renderableIdx++)
+    {
+      TFTRenderable* renderable = renderables[renderableIdx];
+      if(renderable->getVirtualOutputPin() == pin)
+      {
+        renderable->virtualOutputValue = state;
+        if(panelIdx == _activePanel)
+        {
+          renderable->render(_tft, false);
+        }
+      }
+    }
+  }
 }
