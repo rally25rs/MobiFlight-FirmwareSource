@@ -66,6 +66,7 @@ const int thirdScreen = TFT_WIDTH / 3;
 const int sixBtnHeight = 50;
 const int panelTitleHeight = TFT_HEIGHT - sixBtnHeight * 6;
 const int threeBtnHeight = (TFT_HEIGHT - panelTitleHeight) / 3;
+const int fourButtonHeight = (TFT_HEIGHT - panelTitleHeight) / 4;
 
 TFTRenderable* screen1buttons[] = {
   // column 1
@@ -99,9 +100,24 @@ TFTRenderable* screen2buttons[] = {
 };
 MFVirtualPanel screen2 = MFVirtualPanel("G1000 MFD", 6, screen2buttons);
 
+TFTRenderable* screen3buttons[] = {
+  // column 1
+  new TouchButton("LIGHTS_LOGO", 0, panelTitleHeight, halfScreen, fourButtonHeight, "Logo"),
+  new TouchButton("LIGHTS_NAV", 0, panelTitleHeight + fourButtonHeight, halfScreen, fourButtonHeight, "Nav"),
+  new TouchButton("LIGHTS_RECOG", 0, panelTitleHeight + fourButtonHeight * 2, halfScreen, fourButtonHeight, "Strobe"),
+  new TouchButton("FUEL_PUMP", 0, (panelTitleHeight + fourButtonHeight * 3) + 5, halfScreen, fourButtonHeight - 5, "Fuel"),
+  // column 2
+  new TouchButton("LIGHTS_TAXI", halfScreen, panelTitleHeight, halfScreen, fourButtonHeight, "Taxi"),
+  new TouchButton("LIGHTS_WING", halfScreen, panelTitleHeight + fourButtonHeight, halfScreen, fourButtonHeight, "Wing"),
+  new TouchButton("LIGHTS_LANDING", halfScreen, panelTitleHeight + fourButtonHeight * 2, halfScreen, fourButtonHeight, "Land"),
+  new TouchButton("PARKING_PRAKE", halfScreen, (panelTitleHeight + fourButtonHeight * 3) + 5, halfScreen, fourButtonHeight - 5, "Park")
+};
+MFVirtualPanel screen3 = MFVirtualPanel("Lights", 8, screen3buttons);
+
 MFVirtualPanel screens[] = {
   screen1,
-  screen2
+  screen2,
+  screen3
 };
 #endif
 
@@ -819,6 +835,8 @@ void AddTFTDisplay()
   
   // hard-coded pins that my display is wired to, so that MF doesn't allow other inputs to use these pins.
   // https://www.pjrc.com/store/display_ili9341_touch.html
+  registerPin(BTN_PREV_SCREEN, kTypeTFTButton); // Prev Screen Button
+  registerPin(BTN_NEXT_SCREEN, kTypeTFTButton); // Next Screen Button
   registerPin(11, kTypeTFTButton); // SDI
   registerPin(12, kTypeTFTButton); // SDO
   registerPin(13, kTypeTFTButton); // SCK
@@ -827,7 +845,7 @@ void AddTFTDisplay()
   registerPin(TS_CS, kTypeTFTButton);
   registerPin(TS_TIRQ, kTypeTFTButton);
 
-  tftDisplays[tftDisplaysRegistered] = MFTFTDisplay(2, screens);
+  tftDisplays[tftDisplaysRegistered] = MFTFTDisplay(3, screens);
   tftDisplays[tftDisplaysRegistered].attach();
   tftDisplays[tftDisplaysRegistered].renderPanel(0);
   tftDisplaysRegistered++;

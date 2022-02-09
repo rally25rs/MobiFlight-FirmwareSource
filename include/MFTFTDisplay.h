@@ -32,6 +32,7 @@ private:
     Adafruit_ILI9341 *_tft;
     XPT2046_Touchscreen *_ts;
     bool _initialized;
+    bool _allowScreenChange;
     int16_t _lastTouchX;
     int16_t _lastTouchY;
     int16_t _activePanel;

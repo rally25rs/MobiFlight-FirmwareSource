@@ -26,6 +26,7 @@ MFTFTDisplay::MFTFTDisplay(int16_t panelCount, MFVirtualPanel* panels)
   _initialized = false;
   _lastTouchX = -1;
   _lastTouchY = -1;
+  _allowScreenChange = true;
 }
 
 void MFTFTDisplay::attach()
@@ -43,6 +44,9 @@ void MFTFTDisplay::attach()
     _tft->println("Couldn't start touchscreen controller");
   }
   _ts->setRotation(TFT_ROTATION);
+
+  pinMode(BTN_PREV_SCREEN, INPUT_PULLUP);
+  pinMode(BTN_NEXT_SCREEN, INPUT_PULLUP);
 
   _initialized = true;
 }
@@ -64,6 +68,7 @@ void MFTFTDisplay::renderPanel(int16_t panelId)
 
 void MFTFTDisplay::loop()
 {
+  // check for touch screen input
   if(_ts->touched()) {
     if(_lastTouchX == -1) {
       TS_Point t = _ts->getPoint();
@@ -75,6 +80,20 @@ void MFTFTDisplay::loop()
     _handleTouchButtonPress(_lastTouchX, _lastTouchY, false);
     _lastTouchX = -1;
     _lastTouchY = -1;
+  }
+
+  // check for screen change button input
+  // Puttons are PULLUP so LOW == presed
+  uint8_t prev = digitalRead(BTN_PREV_SCREEN);
+  uint8_t next = digitalRead(BTN_NEXT_SCREEN);
+  if(_allowScreenChange && (prev == LOW || next == LOW)) {
+    int16_t newPanel = _activePanel + (prev == LOW ? -1 : 1);
+    if(newPanel < 0) newPanel = _panelCount - 1;
+    if(newPanel >= _panelCount) newPanel = 0;
+    _allowScreenChange = false;
+    renderPanel(newPanel);
+  } else if(prev != LOW && next != LOW && !_allowScreenChange) {
+    _allowScreenChange = true;
   }
 }
 

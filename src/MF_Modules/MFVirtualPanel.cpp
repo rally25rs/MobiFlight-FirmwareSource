@@ -111,7 +111,8 @@ MFVirtualPanel::MFVirtualPanel(const char* name, int renderablesCount, TFTRender
 
 void MFVirtualPanel::render(Adafruit_ILI9341* tft)
 {
-  tft->fillRect(0, 0, 280, 20, ILI9341_DARKGREY);
+  tft->fillRect(0, 0, tft->width(), tft->height(), ILI9341_BLACK);
+  tft->fillRect(0, 0, tft->width(), 20, ILI9341_DARKGREY);
   tft->setCursor(2, 2);
   tft->setTextColor(ILI9341_NAVY);
   tft->setTextSize(2);

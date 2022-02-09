@@ -34,6 +34,8 @@
 // TFT pins
 #define TFT_DC 9
 #define TFT_CS 10
+#define BTN_PREV_SCREEN 0
+#define BTN_NEXT_SCREEN 1
 
 // Touchscreen pins
 #define TS_CS 8
