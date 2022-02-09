@@ -8,7 +8,6 @@ MFVirtualOutput::MFVirtualOutput(uint8_t pin)
 {   
   _pin = pin;
   _value = false;
-  pinMode(_pin, OUTPUT);    // set pin to input
   set(_value);
 }
 
