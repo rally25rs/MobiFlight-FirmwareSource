@@ -14,6 +14,12 @@
 #include "TFTVars.h"
 #include "MFVirtualPanel.h"
 
+extern "C"
+{
+  // callback functions
+  typedef void (*tftScreenEvent) (int, const char *);
+};
+
 /////////////////////////////////////////////////////////////////////
 /// \class MFTFTDisplay MFTFTDisplay.h <MFTFTDisplay.h>
 class MFTFTDisplay
@@ -21,6 +27,7 @@ class MFTFTDisplay
 public:
     MFTFTDisplay(int16_t panelCount = 0, MFVirtualPanel* panels = {});
     static void attachHandler(tftEvent newHandler);
+    static void attachScreenHandler(tftScreenEvent newHandler);
     void attach();
     void detach();
     void loop();
@@ -29,6 +36,7 @@ public:
 
 private:
     static tftEvent _handler;
+    static tftScreenEvent _screenHandler;
     Adafruit_ILI9341 *_tft;
     XPT2046_Touchscreen *_ts;
     bool _initialized;

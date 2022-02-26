@@ -140,5 +140,6 @@ void ClearInputShifters();
 void readInputShifters();
 void handlerInputShifterOnChange(uint8_t eventId, uint8_t pin, const char *name);
 void handlerOnTFTTouch(uint8_t eventId, const char *name);
+void handlerOnTFTScreenChange(int value, const char *name);
 void OnSetVirtualOutput();
 #endif

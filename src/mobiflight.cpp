@@ -70,54 +70,81 @@ const int fourButtonHeight = (TFT_HEIGHT - panelTitleHeight) / 4;
 
 TFTRenderable* screen1buttons[] = {
   // column 1
-  new TouchButton("G1000_AP", 0, panelTitleHeight, thirdScreen, sixBtnHeight, "AP", 1),
-  new TouchButton("G1000_NAV", 0, panelTitleHeight + sixBtnHeight, thirdScreen, sixBtnHeight, "NAV"),
-  new TouchButton("G1000_HDG", 0, panelTitleHeight + sixBtnHeight * 2, thirdScreen, sixBtnHeight, "HDG"),
-  new TouchButton("G1000_APR", 0, panelTitleHeight + sixBtnHeight * 3, thirdScreen, sixBtnHeight, "APR"),
-  new TouchButton("G1000_VS", 0, panelTitleHeight + sixBtnHeight * 4, thirdScreen, sixBtnHeight, "VS"),
-  new TouchButton("G1000_FLC", 0, panelTitleHeight + sixBtnHeight * 5, thirdScreen, sixBtnHeight, "FLC"),
+  new TouchButton("PFD_DIR", 0, panelTitleHeight, thirdScreen, fourButtonHeight, "-D->"),
+  new TouchButton("PFD_FPL", 0, panelTitleHeight + fourButtonHeight, thirdScreen, fourButtonHeight, "FPL"),
+  new TouchButton("PFD_CLR", 0, panelTitleHeight + fourButtonHeight * 2, thirdScreen, fourButtonHeight, "CLR"),
   // column 2
-  new TouchButton("G1000_FD", thirdScreen, panelTitleHeight, thirdScreen, sixBtnHeight, "FD"),
-  new TouchButton("G1000_ALT", thirdScreen, panelTitleHeight + sixBtnHeight, thirdScreen, sixBtnHeight, "ALT"),
-  new TouchButton("G1000_VNV", thirdScreen, panelTitleHeight + sixBtnHeight * 2, thirdScreen, sixBtnHeight, "VNV"),
-  new TouchButton("G1000_BC", thirdScreen, panelTitleHeight + sixBtnHeight * 3, thirdScreen, sixBtnHeight, "BC"),
-  new TouchButton("G1000_N_UP", thirdScreen, panelTitleHeight + sixBtnHeight * 4, thirdScreen, sixBtnHeight, "N UP"),
-  new TouchButton("G1000_N_DN", thirdScreen, panelTitleHeight + sixBtnHeight * 5, thirdScreen, sixBtnHeight, "N DN"),
+  new TouchButton("PFD_MENU", thirdScreen, panelTitleHeight, thirdScreen, fourButtonHeight, "MENU"),
+  new TouchButton("PFD_PROC", thirdScreen, panelTitleHeight + fourButtonHeight, thirdScreen, fourButtonHeight, "PROC"),
+  new TouchButton("PFD_ENT", thirdScreen, panelTitleHeight + fourButtonHeight * 2, thirdScreen, fourButtonHeight, "ENT"),
   // column 3
-  new TouchKnob(thirdScreen * 2, panelTitleHeight, thirdScreen, threeBtnHeight, "NAV"),
-  new TouchKnob(thirdScreen * 2, panelTitleHeight + threeBtnHeight, thirdScreen, threeBtnHeight, "HDG", 2),
-  new TouchKnob(thirdScreen * 2, panelTitleHeight + threeBtnHeight * 2, thirdScreen, threeBtnHeight, "ALT")
+  new TouchKnob(thirdScreen * 2, panelTitleHeight, thirdScreen, threeBtnHeight, "CRS", 15),
+  new TouchKnob(thirdScreen * 2, panelTitleHeight + threeBtnHeight, thirdScreen, threeBtnHeight, "RNG"),
+  new TouchKnob(thirdScreen * 2, panelTitleHeight + threeBtnHeight * 2, thirdScreen, threeBtnHeight, "MFD")
 };
-MFVirtualPanel screen1 = MFVirtualPanel("G1000 MFD Left", 15, screen1buttons);
+MFVirtualPanel screen1 = MFVirtualPanel("PFD", 9, screen1buttons);
 
 TFTRenderable* screen2buttons[] = {
-  new TouchButton("G1000_DIR", thirdScreen * 2, panelTitleHeight, thirdScreen * 3, sixBtnHeight, "-D->"),
-  new TouchButton("G1000_MENU", thirdScreen * 2, panelTitleHeight + sixBtnHeight, thirdScreen, sixBtnHeight, "MENU"),
-  new TouchButton("G1000_FPL", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 2, thirdScreen, sixBtnHeight, "FPL"),
-  new TouchButton("G1000_PROC", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 3, thirdScreen, sixBtnHeight, "PROC"),
-  new TouchButton("G1000_N_CLR", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 4, thirdScreen, sixBtnHeight, "CLR"),
-  new TouchButton("G1000_N_ENT", thirdScreen * 2, panelTitleHeight + sixBtnHeight * 5, thirdScreen, sixBtnHeight, "ENT")
+  // column 1
+  new TouchButton("MFD_AP", 0, panelTitleHeight, thirdScreen, sixBtnHeight, "AP", 1),
+  new TouchButton("MFD_NAV", 0, panelTitleHeight + sixBtnHeight, thirdScreen, sixBtnHeight, "NAV", 2),
+  new TouchButton("MFD_HDG", 0, panelTitleHeight + sixBtnHeight * 2, thirdScreen, sixBtnHeight, "HDG", 3),
+  new TouchButton("MFD_APR", 0, panelTitleHeight + sixBtnHeight * 3, thirdScreen, sixBtnHeight, "APR", 4),
+  new TouchButton("MFD_VS", 0, panelTitleHeight + sixBtnHeight * 4, thirdScreen, sixBtnHeight, "VS", 5),
+  new TouchButton("MFD_FLC", 0, panelTitleHeight + sixBtnHeight * 5, thirdScreen, sixBtnHeight, "FLC", 6),
+  // column 2
+  new TouchButton("MFD_FD", thirdScreen, panelTitleHeight, thirdScreen, sixBtnHeight, "FD", 7),
+  new TouchButton("MFD_ALT", thirdScreen, panelTitleHeight + sixBtnHeight, thirdScreen, sixBtnHeight, "ALT", 8),
+  new TouchButton("MFD_VNV", thirdScreen, panelTitleHeight + sixBtnHeight * 2, thirdScreen, sixBtnHeight, "VNV", 9),
+  new TouchButton("MFD_BC", thirdScreen, panelTitleHeight + sixBtnHeight * 3, thirdScreen, sixBtnHeight, "BC", 10),
+  new TouchButton("MFD_N_UP", thirdScreen, panelTitleHeight + sixBtnHeight * 4, thirdScreen, sixBtnHeight, "N UP"),
+  new TouchButton("MFD_N_DN", thirdScreen, panelTitleHeight + sixBtnHeight * 5, thirdScreen, sixBtnHeight, "N DN"),
+  // column 3
+  new TouchKnob(thirdScreen * 2, panelTitleHeight, thirdScreen, threeBtnHeight, "NAV", 12),
+  new TouchKnob(thirdScreen * 2, panelTitleHeight + threeBtnHeight, thirdScreen, threeBtnHeight, "HDG", 13),
+  new TouchKnob(thirdScreen * 2, panelTitleHeight + threeBtnHeight * 2, thirdScreen, threeBtnHeight, "ALT", 14)
 };
-MFVirtualPanel screen2 = MFVirtualPanel("G1000 MFD", 6, screen2buttons);
+MFVirtualPanel screen2 = MFVirtualPanel("Auto Pilot", 15, screen2buttons);
 
 TFTRenderable* screen3buttons[] = {
   // column 1
-  new TouchButton("LIGHTS_LOGO", 0, panelTitleHeight, halfScreen, fourButtonHeight, "Logo"),
-  new TouchButton("LIGHTS_NAV", 0, panelTitleHeight + fourButtonHeight, halfScreen, fourButtonHeight, "Nav"),
-  new TouchButton("LIGHTS_RECOG", 0, panelTitleHeight + fourButtonHeight * 2, halfScreen, fourButtonHeight, "Strobe"),
-  new TouchButton("FUEL_PUMP", 0, (panelTitleHeight + fourButtonHeight * 3) + 5, halfScreen, fourButtonHeight - 5, "Fuel"),
+  new TouchButton("MFD_DIR", 0, panelTitleHeight, thirdScreen, fourButtonHeight, "-D->"),
+  new TouchButton("MFD_FPL", 0, panelTitleHeight + fourButtonHeight, thirdScreen, fourButtonHeight, "FPL"),
+  new TouchButton("MFD_CLR", 0, panelTitleHeight + fourButtonHeight * 2, thirdScreen, fourButtonHeight, "CLR"),
   // column 2
-  new TouchButton("LIGHTS_TAXI", halfScreen, panelTitleHeight, halfScreen, fourButtonHeight, "Taxi"),
-  new TouchButton("LIGHTS_WING", halfScreen, panelTitleHeight + fourButtonHeight, halfScreen, fourButtonHeight, "Wing"),
-  new TouchButton("LIGHTS_LANDING", halfScreen, panelTitleHeight + fourButtonHeight * 2, halfScreen, fourButtonHeight, "Land"),
-  new TouchButton("PARKING_PRAKE", halfScreen, (panelTitleHeight + fourButtonHeight * 3) + 5, halfScreen, fourButtonHeight - 5, "Park")
+  new TouchButton("MFD_MENU", thirdScreen, panelTitleHeight, thirdScreen, fourButtonHeight, "MENU"),
+  new TouchButton("MFD_PROC", thirdScreen, panelTitleHeight + fourButtonHeight, thirdScreen, fourButtonHeight, "PROC"),
+  new TouchButton("MFD_ENT", thirdScreen, panelTitleHeight + fourButtonHeight * 2, thirdScreen, fourButtonHeight, "ENT"),
+  // column 3
+  new TouchKnob(thirdScreen * 2, panelTitleHeight, thirdScreen, threeBtnHeight, "CRS", 15),
+  new TouchKnob(thirdScreen * 2, panelTitleHeight + threeBtnHeight, thirdScreen, threeBtnHeight, "RNG"),
+  new TouchKnob(thirdScreen * 2, panelTitleHeight + threeBtnHeight * 2, thirdScreen, threeBtnHeight, "MFD")
 };
-MFVirtualPanel screen3 = MFVirtualPanel("Lights", 8, screen3buttons);
+MFVirtualPanel screen3 = MFVirtualPanel("MFD", 9, screen3buttons);
+
+TFTRenderable* screen4buttons[] = {
+  // column 1
+  new TouchButton("LIGHTS_LOGO", 0, panelTitleHeight, thirdScreen, fourButtonHeight, "Logo", 16),
+  new TouchButton("LIGHTS_NAV", 0, panelTitleHeight + fourButtonHeight, thirdScreen, fourButtonHeight, "Nav", 17),
+  new TouchButton("LIGHTS_RECOG", 0, panelTitleHeight + fourButtonHeight * 2, thirdScreen, fourButtonHeight, "Strb", 18),
+  new TouchButton("PARK", 0, (panelTitleHeight + fourButtonHeight * 3) + 5, thirdScreen, fourButtonHeight - 5, "Park", 19),
+  // column 2
+  new TouchButton("LIGHTS_TAXI", thirdScreen, panelTitleHeight, thirdScreen, fourButtonHeight, "Taxi", 20),
+  new TouchButton("LIGHTS_WING", thirdScreen, panelTitleHeight + fourButtonHeight, thirdScreen, fourButtonHeight, "Wing", 21),
+  new TouchButton("LIGHTS_LANDING", thirdScreen, panelTitleHeight + fourButtonHeight * 2, thirdScreen, fourButtonHeight, "Land", 22),
+  new TouchButton("AP_YD", thirdScreen, (panelTitleHeight + fourButtonHeight * 3) + 5, thirdScreen, fourButtonHeight - 5, "YD", 23),
+  // column 3
+  new TouchKnob(thirdScreen * 2, panelTitleHeight, thirdScreen, threeBtnHeight, "TRdr", 24),
+  new TouchKnob(thirdScreen * 2, panelTitleHeight + threeBtnHeight, thirdScreen, threeBtnHeight, "TEle", 25),
+  new TouchKnob(thirdScreen * 2, panelTitleHeight + threeBtnHeight * 2, thirdScreen, threeBtnHeight, "Prop", 26)
+};
+MFVirtualPanel screen4 = MFVirtualPanel("Lights / Trims", 11, screen4buttons);
 
 MFVirtualPanel screens[] = {
   screen1,
   screen2,
-  screen3
+  screen3,
+  screen4
 };
 #endif
 
@@ -278,6 +305,7 @@ void attachEventCallbacks()
   MFAnalog::attachHandler(handlerOnAnalogChange);
 #endif
 #if MF_TFT_SUPPORT == 1
+  MFTFTDisplay::attachScreenHandler(handlerOnTFTScreenChange);
   MFTFTDisplay::attachHandler(handlerOnTFTTouch);
 #endif
 }
@@ -845,7 +873,7 @@ void AddTFTDisplay()
   registerPin(TS_CS, kTypeTFTButton);
   registerPin(TS_TIRQ, kTypeTFTButton);
 
-  tftDisplays[tftDisplaysRegistered] = MFTFTDisplay(3, screens);
+  tftDisplays[tftDisplaysRegistered] = MFTFTDisplay(4, screens);
   tftDisplays[tftDisplaysRegistered].attach();
   tftDisplays[tftDisplaysRegistered].renderPanel(0);
   tftDisplaysRegistered++;
@@ -923,6 +951,16 @@ void handlerOnTFTTouch(uint8_t eventId, const char *name)
   cmdMessenger.sendCmdArg(eventId);
   cmdMessenger.sendCmdEnd();
 };
+
+//// EVENT HANDLER /////
+void handlerOnTFTScreenChange(int value, const char *name)
+{
+  cmdMessenger.sendCmdStart(kAnalogChange);
+  cmdMessenger.sendCmdArg(name);
+  cmdMessenger.sendCmdArg(value);
+  cmdMessenger.sendCmdEnd();
+};
+
 #endif
 
 /**

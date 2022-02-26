@@ -18,6 +18,7 @@
 #include "MFTFTDisplay.h"
 
 tftEvent MFTFTDisplay::_handler = NULL;
+tftScreenEvent MFTFTDisplay::_screenHandler = NULL;
 
 MFTFTDisplay::MFTFTDisplay(int16_t panelCount, MFVirtualPanel* panels)
 {
@@ -63,6 +64,7 @@ void MFTFTDisplay::detach()
 void MFTFTDisplay::renderPanel(int16_t panelId)
 {
   _activePanel = panelId;
+  (*_screenHandler)(_activePanel, "TFT_SCREEN");
   _panels[_activePanel].render(_tft);
 }
 
@@ -113,6 +115,11 @@ void MFTFTDisplay::_handleTouchButtonPress(int16_t x, int16_t y, bool pressed)
 void MFTFTDisplay::attachHandler(tftEvent newHandler)
 {
   _handler = newHandler;
+}
+
+void MFTFTDisplay::attachScreenHandler(tftScreenEvent newHandler)
+{
+  _screenHandler = newHandler;
 }
 
 void MFTFTDisplay::updateOutputs(uint8_t pin, int32_t state)

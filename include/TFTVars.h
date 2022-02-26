@@ -29,7 +29,7 @@
 // Screen size
 #define TFT_HEIGHT 320
 #define TFT_WIDTH 240
-#define TFT_ROTATION 0
+#define TFT_ROTATION 2
 
 // TFT pins
 #define TFT_DC 9
